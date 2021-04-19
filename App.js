@@ -3,9 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { LoginScreen } from './Src/screens/Login';
 import { RegisterScreen } from './Src/screens/Register';
 export default function App() {
-  return (
-    <LoginScreen/>
-  );
+  return  <RegisterScreen/>;
+    // <LoginScreen/> 
 }
 
 const styles = StyleSheet.create({
