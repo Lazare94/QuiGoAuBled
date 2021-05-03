@@ -1,17 +1,27 @@
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { LoginScreen } from './Src/screens/Login';
-import { RegisterScreen } from './Src/screens/Register';
+import { AuthStackNavigator } from './Src/navigators/AuthStackNavigator';
+import {lightTheme} from './Src/Themes/light'
+const RootStack=createStackNavigator();
+
+const AuthStack=createStackNavigator();
+
 export default function App() {
-  return  <RegisterScreen/>;
-    // <LoginScreen/> 
+  return(
+
+    <NavigationContainer theme={lightTheme}>
+
+      <RootStack.Navigator screenOptions={{
+        headerShown:false,
+      }}>
+
+        <RootStack.Screen name={'AuthStack'} component={AuthStackNavigator}/>
+        <RootStack.Screen name={'HomeStack'} component={AuthStackNavigator}/>
+      </RootStack.Navigator>
+
+    </NavigationContainer>
+  );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
