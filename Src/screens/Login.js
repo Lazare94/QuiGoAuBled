@@ -7,6 +7,7 @@ import { FilledButton } from "../Composants/FilledButton";
 import { TextButton } from "../Composants/TextButton";
 import { Error } from "../Composants/Error";
 import { AuthContainer } from '../Composants/AuthContainer';
+import { RadioButtons } from '../Composants/RadioButton';
 
 
 export function LoginScreen({ navigation }) {
@@ -14,6 +15,12 @@ export function LoginScreen({ navigation }) {
         <AuthContainer>
            
             <Heading style={styles.titre}>Se connecter</Heading>
+            <RadioButtons
+             Valeur={[{label: 'Se connecter avec email.', value: 0 },{label: 'Se connecter avec le téléphone.', value: 1 }]}
+             onPress={(value)=>{
+                 if(this.state.value===0){message.alert("lazare");}
+             }} />
+            
             <Error error={""} />
             <Input
                 style={styles.input}
@@ -62,3 +69,5 @@ const styles = StyleSheet.create({
         marginVertical: 32,
     },
 });
+
+             

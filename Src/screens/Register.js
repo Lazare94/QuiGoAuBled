@@ -22,9 +22,9 @@ export function RegisterScreen({navigation}) {
 
       <Input
        style={styles.input} placeholder ={'Nom'}/>
-        <Input
+      <Input
        style={styles.input} placeholder ={'Prénom'}/>
-        <Input
+      <Input
        style={styles.input} placeholder ={'Téléphone'} />
       <Input 
       

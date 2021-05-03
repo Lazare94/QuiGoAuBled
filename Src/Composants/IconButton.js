@@ -12,7 +12,7 @@ export function IconButton({name,style,onPress}) {
 const styles = StyleSheet.create({
 
   container: {
-
+    
   },
   
 });
