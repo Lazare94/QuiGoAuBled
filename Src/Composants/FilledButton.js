@@ -3,9 +3,12 @@ import { StyleSheet, TouchableOpacity,Text} from 'react-native';
 
 
 export function FilledButton({ title,style,onPress}) {
-  return <TouchableOpacity style={[styles.container]} onPress={onPress}>
+  return ( 
+  
+  <TouchableOpacity style={[styles.container]} onPress={onPress}>
     <Text style={styles.text} >{title.toUpperCase()} </Text>
-    </TouchableOpacity>;
+    </TouchableOpacity>
+    );
 }
 
 const styles = StyleSheet.create({
