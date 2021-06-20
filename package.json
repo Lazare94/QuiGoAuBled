@@ -21,6 +21,8 @@
     "react-native": "^0.64.0",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-ionicons": "^4.6.5",
+    "react-native-phone-input": "^1.0.9",
+    "react-native-phone-number-input": "^2.1.0",
     "react-native-reanimated": "~2.1.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
@@ -29,7 +31,8 @@
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "^0.15.7",
     "react-navigation": "^4.4.4",
-    "react-navigation-stack": "^2.10.4"
+    "react-navigation-stack": "^2.10.4",
+    "react-phone-number-input": "^3.1.23"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
