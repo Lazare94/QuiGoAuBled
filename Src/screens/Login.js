@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState,useEffect } from "react";
-import { StyleSheet, ScrollView, View,Alert } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet} from "react-native";
 import { Heading } from "../Composants/Heading";
 import { Input } from "../Composants/Input";
 import { FilledButton } from "../Composants/FilledButton";
@@ -9,67 +9,28 @@ import { Error } from "../Composants/Error";
 import { AuthContainer } from '../Composants/AuthContainer';
 import { RadioButtons } from '../Composants/RadioButton';
 import axios from "axios";
-// import { PhoneInput } from '../Composants/IdentifiantFlag';
-// import{ PhoneInput }from 'react-native-phone-input';
+import helpers from '../Controllers/Validation'; 
+
 export function LoginScreen({ navigation }) {
-    const [Email,setEmail] =useState ('')
-     const [Phone,setPhone] =useState (null)
-     const [user,setuser] =useState ([])
-     const [Password,setPassword] =useState ('')
-     const [ErrorValidation,setErrorValidation] =useState ('')
-     const utf8 = require('utf8');
+    const [Email,setEmail] =useState ('');
+     const [Phone,setPhone] =useState (null);
+     const [user,setuser] =useState ([]);
+     const [Password,setPassword] =useState ('');
+     const [ErrorValidation,setErrorValidation] =useState ('');
     const [value, setValue] = useState(0);
-    let i=0;
-    const isValideUser=false;
 
 
-    const validationLogin=(PassWord,Email,Phone)=>{
-        if (Email=== undefined && Phone===undefined){
-           isValideUser=false;
-        }
-        if(Email!=undefined && Email!=""){
-            const ValidRegex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-            try {
-                ValidRegex.test(Email)
-                if(ValidRegex.test(Email)===false){
-                    setErrorValidation('Email invalide')
-                    console.log('Email invalide')
-                }else{
-                    setErrorValidation('')
-                    console.log('Email valide')
-                }
-            } catch (error) {
-                console.log(error)
-            }  
-            // } if(ValidRegex.test(Email)){
-            //     console.log('email valide');
-            //     isValideUser=true;
-            // }
-        }
-        else {
-            setErrorValidation('Saisis une adresse email')
-            }
-    }
-        const verifier=(user)=>{  
-            for (i=0;i<user.length ;i++){
-              if(user[i].Email==Email ||user[i].Phone==Phone){
-                  console.log('user existe');
-                  break;
-              }
-            }}
-         
-         const getUser=()=>{
-            console.log('allo1')
-            axios.post('http://169.254.41.84:4000/login',{
-                Email:Email,
-                //Password:Password,
-            })
-            .then(user => setuser(user.data))
-            .then(j=>verifier(user))
-            .catch(err => {
-                console.log('caught it!',err.status);
-             })}
-
+    const getUser=async()=>{
+        console.log('allo1')
+       await axios.post('http://169.254.41.84:4000/login',{
+            Email:Email,
+            Password:Password
+        })
+        .then(user => setuser(user.data))
+        .then(j=>helpers.VerifierUse(user,Email,Phone))
+        .catch(err => {
+            console.log('caught it!',err.status);
+        })}
 
     const myinput = value === 0 ? (
         <Input
@@ -77,8 +38,7 @@ export function LoginScreen({ navigation }) {
             onChangeText={Email=>setEmail(Email)}
             Email={Email}
             placeholder={"Adresse Email"}
-            keyboardType={"email-adress"}
-           
+           // keyboardType={"email-adress"}   
         />
     ) : ( 
         <Input
@@ -92,10 +52,7 @@ export function LoginScreen({ navigation }) {
 
     const handleClick = (value) => {
         setValue(value)
-
      }
-     
-     
      
     return (
         <AuthContainer>
@@ -121,12 +78,9 @@ export function LoginScreen({ navigation }) {
                 title={"Connexion"}
                 style={styles.loginButton}
                 onPress={() => {
-                    validationLogin(Password,Email,Phone)
-                    getUser()
-           
-
-                    // test()
-                   
+                   const RetourValidEmail= helpers.IsValidEmail(Email)
+                   setErrorValidation(RetourValidEmail.ErrorvalidEmail)
+                   if (RetourValidEmail.ErrorEmail==true){getUser()}
                 }}
             />
 

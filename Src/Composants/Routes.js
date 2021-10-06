@@ -1,6 +1,6 @@
 //import express from 'express';
 const express = require('express');
-const { signup, login, isAuth }= require('../Controllers/auth.js')
+const { signup, login, isAuth }= require('../Controllers/Validation')
 
 const router = express.Router();
 
