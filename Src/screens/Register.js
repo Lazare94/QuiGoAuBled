@@ -16,7 +16,7 @@ export function RegisterScreen({ navigation }) {
   const [Prenom, setPrenom] = useState("");
   const [Email, setEmail] = useState(null);
   const [Phone, setPhone] = useState(null);
-  const [data, setdata] = useState(false);
+  const [data, setdata] = useState();
   const [Password, setPassword] = useState("");
   const [ErrorValidation, setErrorValidation] = useState("");
   const [value, setValue] = useState(0);
@@ -26,20 +26,17 @@ export function RegisterScreen({ navigation }) {
   const [ErrorValidationNbr, setErrorValidationNbr] = useState("");
 
   const AjouterUser = async () => {
-    await axios
-      .post("http://192.168.5.235:4000/Sign", {
-        Email: Email,
-        Password: Password,
-        Phone: Phone,
-        Nom: Nom,
-        Prenom: Prenom,
-      })
-      .then((response) => {
-        setdata(response.data);
-      })
+    await axios.post("http://192.168.5.235:4000/Sign", {
+      Email: Email,
+      Password: Password,
+      Phone: Phone,
+      Nom: Nom,
+      Prenom: Prenom,
+    })
+    .then(response => setdata(response.data))
       //.then(j=>helpers.VerifierUse(response,Email,Phone))
       .catch((err) => {
-        console.log("caught it!");
+        console.log("caught it!",err);
       });
   };
 
@@ -55,7 +52,7 @@ export function RegisterScreen({ navigation }) {
     ) : (
       <Input
         style={styles.input}
-         onChangeText={Phone=>setPhone(Phone)}
+        onChangeText={Phone => setPhone(Phone)}
         Phone={Phone}
         placeholder={"Téléphone"}
         keyboardType={"phone-pad"}
@@ -88,7 +85,10 @@ export function RegisterScreen({ navigation }) {
         }}
       />
 
-      <Error error={ErrorValidation} />  <Error error={ErrorValidationLong} /><Error error={ErrorValidationMa} /><Error error={ErrorValidationMi} />
+      <Error error={ErrorValidation} />
+      <Error error={ErrorValidationLong} />
+      <Error error={ErrorValidationMa} />
+      <Error error={ErrorValidationMi} />
       <Error error={ErrorValidationNbr} />
       <Input
         style={styles.input}
@@ -117,11 +117,11 @@ export function RegisterScreen({ navigation }) {
         title={"Inscrire"}
         style={styles.loginButton}
         onPress={() => {
-          if (value === 0) {
-            setPhone(null);
-          } else {
-            setEmail(null);
-          }
+          // if (value === 0) {
+          //   setPhone(null);
+          // } else {
+          //   setEmail(null);
+          // }
           if (!helpers.validNom(Nom)) {
             setErrorValidation("Champ nom est vide");
             return;
@@ -132,52 +132,65 @@ export function RegisterScreen({ navigation }) {
           }
           var RetourValid = helpers.IsValidUserInfo(Email, Phone);
           setErrorValidation(RetourValid.ErrorValidUserSaisi);
-          console.log(Password);
-          var RetourPasswordValid=helpers.ValidPassWord(Password)
-          if(!RetourPasswordValid.Longueur){
-            setErrorValidationLong('Le mot de passe doit comporter 8 caractères ou plus ');
-          }else{
-            setErrorValidationLong('')
+          var RetourPasswordValid = helpers.ValidPassWord(Password);
+          if (!RetourPasswordValid.Longueur) {
+            setErrorValidationLong(
+              "Le mot de passe doit comporter 8 caractères ou plus "
+            );
+          } else {
+            setErrorValidationLong("");
           }
-          if(!RetourPasswordValid.Minuscule){
-            setErrorValidationMi('Le mot de passe doit contenir au moins 1 Lettre minuscule');
-          }else{
-            setErrorValidationMi('')
+          if (!RetourPasswordValid.Minuscule) {
+            setErrorValidationMi(
+              "Le mot de passe doit contenir au moins 1 Lettre minuscule"
+            );
+          } else {
+            setErrorValidationMi("");
           }
-          if(!RetourPasswordValid.Majuscule){
-            setErrorValidationMa('Le mot de passe doit contenir au moins 1 Lettre majuscule ');
-          }else{
-            setErrorValidationMa('')
+          if (!RetourPasswordValid.Majuscule) {
+            setErrorValidationMa(
+              "Le mot de passe doit contenir au moins 1 Lettre majuscule "
+            );
+          } else {
+            setErrorValidationMa("");
           }
-          if(!RetourPasswordValid.Nombre){
-            setErrorValidationNbr('Le mot de passe doit contenir au moins 1 chiffre ');
-          }else{
-            setErrorValidationNbr('')
+          if (!RetourPasswordValid.Nombre) {
+            setErrorValidationNbr(
+              "Le mot de passe doit contenir au moins 1 chiffre "
+            );
+          } else {
+            setErrorValidationNbr("");
           }
-          if(!RetourPasswordValid.CaractereSpeciaux){
-            setErrorValidation('Le mot de passe doit contenir au moins 1 caractère spécial, ');
-          }else{
-            setErrorValidation('')
+          if (!RetourPasswordValid.CaractereSpeciaux) {
+            setErrorValidation(
+              "Le mot de passe doit contenir au moins 1 caractère spécial, "
+            );
+          } else {
+            setErrorValidation("");
           }
-          if(!RetourPasswordValid.CaractereSpeciaux ||!RetourPasswordValid.Nombre ||!RetourPasswordValid.Majuscule||!RetourPasswordValid.Minuscule ||!RetourPasswordValid.Longueur){
+          if (
+            !RetourPasswordValid.CaractereSpeciaux ||
+            !RetourPasswordValid.Nombre ||
+            !RetourPasswordValid.Majuscule ||
+            !RetourPasswordValid.Minuscule ||
+            !RetourPasswordValid.Longueur
+          ) {
             return;
           }
 
           var RetourValid = helpers.IsValidUserInfo(Email, Phone);
-           setErrorValidation(RetourValid.ErrorValidUserSaisi);
-           console.log(Password);
+          setErrorValidation(RetourValid.ErrorValidUserSaisi);
           if (RetourValid.ErrorUserSaisi == true) {
             AjouterUser();
             if (data === true) {
               setErrorValidation("");
               navigation.navigate("Login");
-            } else {
+            } else if (data==false) {
               setErrorValidation(
                 "Un utilisateur avec ce même numéro ou la même adresse existe déja"
               );
             }
           }
-        
         }}
       />
 
