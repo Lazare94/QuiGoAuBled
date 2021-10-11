@@ -1,140 +1,209 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import {Heading} from '../Composants/Heading';
-import {Input} from  '../Composants/Input';
-import {FilledButton} from  '../Composants/FilledButton';
-import {Error} from '../Composants/Error';
-import {IconButton} from '../Composants/IconButton';
-import { AuthContainer } from '../Composants/AuthContainer';
-import { RadioButtons } from '../Composants/RadioButton';
+import { StatusBar } from "expo-status-bar";
+import React, { useState, useRef } from "react";
+import { StyleSheet } from "react-native";
+import { Heading } from "../Composants/Heading";
+import { Input } from "../Composants/Input";
+import { FilledButton } from "../Composants/FilledButton";
+import { Error } from "../Composants/Error";
+import { IconButton } from "../Composants/IconButton";
+import { AuthContainer } from "../Composants/AuthContainer";
+import { RadioButtons } from "../Composants/RadioButton";
 import axios from "axios";
-import helpers from '../Controllers/Validation';
+import helpers from "../Controllers/Validation";
 
-export function RegisterScreen({navigation}) {
-  const [Nom,setNom] =useState ('');
-  const [Prenom,setPrenom] =useState ('');
-  const [Email,setEmail] =useState ('');
-  const [Phone,setPhone] =useState (null);
- // const [user,setuser] =useState ([]);
-  const [Password,setPassword] =useState ('');
-  const [ErrorValidation,setErrorValidation] =useState ('');
+export function RegisterScreen({ navigation }) {
+  const [Nom, setNom] = useState("");
+  const [Prenom, setPrenom] = useState("");
+  const [Email, setEmail] = useState(null);
+  const [Phone, setPhone] = useState(null);
+  const [data, setdata] = useState(false);
+  const [Password, setPassword] = useState("");
+  const [ErrorValidation, setErrorValidation] = useState("");
   const [value, setValue] = useState(0);
-  //var  bcrypt  = require ( ' bcryptjs ' ) ; 
-   const AjouterUser=async()=>{
-   //await axios.post('http://169.254.41.84:4000/Sign',{
-    await axios.post('http://192.168.5.235:4000/Sign',{
-        Email:Email,
-        Password:Password,
-        Phone:Phone,
-        Nom:Nom,
-        Prenom:Prenom
-    })
-    .then(response => {
-      console.log(response);
-    })
-    //.then(j=>helpers.VerifierUse(user,Email,Phone))
-    .catch(err => {
-        console.log('caught it!');
-    })}
+  const [ErrorValidationLong, setErrorValidationLong] = useState("");
+  const [ErrorValidationMi, setErrorValidationMi] = useState("");
+  const [ErrorValidationMa, setErrorValidationMa] = useState("");
+  const [ErrorValidationNbr, setErrorValidationNbr] = useState("");
 
+  const AjouterUser = async () => {
+    await axios
+      .post("http://192.168.5.235:4000/Sign", {
+        Email: Email,
+        Password: Password,
+        Phone: Phone,
+        Nom: Nom,
+        Prenom: Prenom,
+      })
+      .then((response) => {
+        setdata(response.data);
+      })
+      //.then(j=>helpers.VerifierUse(response,Email,Phone))
+      .catch((err) => {
+        console.log("caught it!");
+      });
+  };
 
-    const myinput = value === 0 ? (
-        <Input
-            style={styles.input}
-            placeholder={"Email"}
-            onChangeText={Email=>setEmail(Email)}
-            Email={Email}
-            keyboardType={"email-address"}
-        />
+  const myinput =
+    value === 0 ? (
+      <Input
+        style={styles.input}
+        placeholder={"Email"}
+        onChangeText={(Email) => setEmail(Email)}
+        Email={Email}
+        keyboardType={"email-address"}
+      />
     ) : (
-          
-        <Input
-             style={styles.input}
-             onChangeText={Phone=>setPhone(Phone)}
-             Phone={Phone}
-             placeholder={"Téléphone"}
-            keyboardType={"phone-pad"}
-         />
-    )
+      <Input
+        style={styles.input}
+         onChangeText={Phone=>setPhone(Phone)}
+        Phone={Phone}
+        placeholder={"Téléphone"}
+        keyboardType={"phone-pad"}
+      />
+    );
 
-    const handleClick = (value) => {
-        setValue(value)
-
-     }
+  const handleClick = (value) => {
+    setValue(value);
+  };
 
   return (
-    <AuthContainer> 
+    <AuthContainer>
       <Heading style={styles.titre}>Inscription</Heading>
       <RadioButtons
-        Valeur={[{ label: 'Créer compte en utilisant le mail.', value: 0 }, { label: 'Créer compte en utilisant le numéro de téléphone', value: 1 }]}
-        onPress ={handleClick}
-    />
+        Valeur={[
+          { label: "Créer compte en utilisant le mail.", value: 0 },
+          {
+            label: "Créer compte en utilisant le numéro de téléphone",
+            value: 1,
+          },
+        ]}
+        onPress={handleClick}
+      />
 
-      <IconButton style={styles.closeIcon} name={'close'} onPress={()=>{
-     
-      navigation.pop();
-      }} />
+      <IconButton
+        style={styles.closeIcon}
+        name={"close"}
+        onPress={() => {
+          navigation.pop();
+        }}
+      />
 
-      <Error error= {ErrorValidation}/>
+      <Error error={ErrorValidation} />  <Error error={ErrorValidationLong} /><Error error={ErrorValidationMa} /><Error error={ErrorValidationMi} />
+      <Error error={ErrorValidationNbr} />
+      <Input
+        style={styles.input}
+        onChangeText={(Nom) => setNom(Nom)}
+        Nom={Nom}
+        placeholder={"Nom"}
+      />
 
       <Input
-       style={styles.input}
-       onChangeText={Nom=>setNom(Nom)}
-       Nom={Nom}
-       placeholder ={'Nom'}/>
-       
+        style={styles.input}
+        onChangeText={(Prenom) => setPrenom(Prenom)}
+        Prenom={Prenom}
+        placeholder={"Prénom"}
+      />
+
+      {myinput}
       <Input
-       style={styles.input}
-       onChangeText={Prenom=>setPrenom(Prenom)}
-       Prenom={Prenom}
-       placeholder ={'Prénom'}/>
-       
-         {myinput}
-      <Input
-       style={styles.input} 
-       onChangeText={Password=>setPassword(Password)}
-       Password={Password}
-       placeholder ={'Mot de passe'} secureTextEntry/>
-       <FilledButton 
-       title={'Inscrire'}
-        style={styles.loginButton} 
-        onPress={()=>{
-          const RetourValidEmail= helpers.IsValidEmail(Email);
-          setErrorValidation(RetourValidEmail.ErrorvalidEmail);
-        //setPassword(helpers.HachageMotPasse(Password));
-        console.log(Password);
-        if (RetourValidEmail.ErrorEmail==true){ AjouterUser()}
+        style={styles.input}
+        onChangeText={(Password) => setPassword(Password)}
+        Password={Password}
+        placeholder={"Mot de passe"}
+        secureTextEntry
+      />
+
+      <FilledButton
+        title={"Inscrire"}
+        style={styles.loginButton}
+        onPress={() => {
+          if (value === 0) {
+            setPhone(null);
+          } else {
+            setEmail(null);
+          }
+          if (!helpers.validNom(Nom)) {
+            setErrorValidation("Champ nom est vide");
+            return;
+          }
+          if (!helpers.validPrenom(Prenom)) {
+            setErrorValidation("Champ prénom est vide");
+            return;
+          }
+          var RetourValid = helpers.IsValidUserInfo(Email, Phone);
+          setErrorValidation(RetourValid.ErrorValidUserSaisi);
+          console.log(Password);
+          var RetourPasswordValid=helpers.ValidPassWord(Password)
+          if(!RetourPasswordValid.Longueur){
+            setErrorValidationLong('Le mot de passe doit comporter 8 caractères ou plus ');
+          }else{
+            setErrorValidationLong('')
+          }
+          if(!RetourPasswordValid.Minuscule){
+            setErrorValidationMi('Le mot de passe doit contenir au moins 1 Lettre minuscule');
+          }else{
+            setErrorValidationMi('')
+          }
+          if(!RetourPasswordValid.Majuscule){
+            setErrorValidationMa('Le mot de passe doit contenir au moins 1 Lettre majuscule ');
+          }else{
+            setErrorValidationMa('')
+          }
+          if(!RetourPasswordValid.Nombre){
+            setErrorValidationNbr('Le mot de passe doit contenir au moins 1 chiffre ');
+          }else{
+            setErrorValidationNbr('')
+          }
+          if(!RetourPasswordValid.CaractereSpeciaux){
+            setErrorValidation('Le mot de passe doit contenir au moins 1 caractère spécial, ');
+          }else{
+            setErrorValidation('')
+          }
+          if(!RetourPasswordValid.CaractereSpeciaux ||!RetourPasswordValid.Nombre ||!RetourPasswordValid.Majuscule||!RetourPasswordValid.Minuscule ||!RetourPasswordValid.Longueur){
+            return;
+          }
+
+          var RetourValid = helpers.IsValidUserInfo(Email, Phone);
+           setErrorValidation(RetourValid.ErrorValidUserSaisi);
+           console.log(Password);
+          if (RetourValid.ErrorUserSaisi == true) {
+            AjouterUser();
+            if (data === true) {
+              setErrorValidation("");
+              navigation.navigate("Login");
+            } else {
+              setErrorValidation(
+                "Un utilisateur avec ce même numéro ou la même adresse existe déja"
+              );
+            }
+          }
         
         }}
-         />
+      />
 
-      <StatusBar style="auto" />{/* afffiche les icon de bacterie et autre */}
-
+      <StatusBar style="auto" />
+      {/* afffiche les icon de bacterie et autre */}
     </AuthContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-
-  },
-  titre:{
-    marginBottom:48,
+  container: {},
+  titre: {
+    marginBottom: 48,
   },
   input: {
-      marginVertical:8,
+    marginVertical: 8,
   },
-  loginButton:{
-    marginVertical:32,
+  loginButton: {
+    marginVertical: 32,
   },
   TextButton: {
-    marginVertical:32,
+    marginVertical: 32,
   },
-  closeIcon:{
-  position:'absolute',
-    top:60,
-    right:16,
-    
+  closeIcon: {
+    position: "absolute",
+    top: 60,
+    right: 16,
   },
 });

@@ -12,7 +12,7 @@ import axios from "axios";
 import helpers from '../Controllers/Validation'; 
 
 export function LoginScreen({ navigation }) {
-    const [Email,setEmail] =useState ('');
+    const [Email,setEmail] =useState (null);
      const [Phone,setPhone] =useState (null);
      const [user,setuser] =useState ([]);
      const [Password,setPassword] =useState ('');
@@ -24,10 +24,11 @@ export function LoginScreen({ navigation }) {
         console.log('allo1')
        await axios.post('http://169.254.41.84:4000/login',{
             Email:Email,
-            Password:Password
+            Password:Password,
+            Phone:Phone
         })
         .then(user => setuser(user.data))
-        .then(j=>helpers.VerifierUse(user,Email,Phone))
+       // .then(j=>helpers.VerifierUse(user,Email,Phone))
         .catch(err => {
             console.log('caught it!',err.status);
         })}
@@ -46,7 +47,7 @@ export function LoginScreen({ navigation }) {
             onChangeText={Phone=>setPhone(Phone)}
             Phone={Phone}
             placeholder={"Numéro téléphone "}
-            keyboardType={"tel"}         
+           // keyboardType={"tel"}         
          />
     )
 
@@ -78,9 +79,15 @@ export function LoginScreen({ navigation }) {
                 title={"Connexion"}
                 style={styles.loginButton}
                 onPress={() => {
-                   const RetourValidEmail= helpers.IsValidEmail(Email)
-                   setErrorValidation(RetourValidEmail.ErrorvalidEmail)
-                   if (RetourValidEmail.ErrorEmail==true){getUser()}
+                    if(value===0){
+                        setPhone(null);
+                    }else{
+                        setEmail(null)
+                    } 
+                    var RetourValid= helpers.IsValidUserInfo(Email,Phone)
+                    setErrorValidation(RetourValid.ErrorValidUserSaisi)
+                 
+                   if (RetourValid.ErrorUserSaisi==true){getUser()}
                 }}
             />
 
