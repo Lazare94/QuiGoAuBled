@@ -26,17 +26,17 @@ export function RegisterScreen({ navigation }) {
   const [ErrorValidationNbr, setErrorValidationNbr] = useState("");
 
   const AjouterUser = async () => {
-    await axios.post("http://192.168.5.235:4000/Sign", {
-      Email: Email,
-      Password: Password,
-      Phone: Phone,
-      Nom: Nom,
-      Prenom: Prenom,
-    })
-    .then(response => setdata(response.data))
-      //.then(j=>helpers.VerifierUse(response,Email,Phone))
+    await axios
+      .post("http://192.168.5.235:4000/Sign", {
+        Email: Email,
+        Password: Password,
+        Phone: Phone,
+        Nom: Nom,
+        Prenom: Prenom,
+      },{timeout:500000})
+      .then((response) => setdata(response.data))
       .catch((err) => {
-        console.log("caught it!",err);
+        console.log("caught it!", err);
       });
   };
 
@@ -52,7 +52,7 @@ export function RegisterScreen({ navigation }) {
     ) : (
       <Input
         style={styles.input}
-        onChangeText={Phone => setPhone(Phone)}
+        onChangeText={(Phone) => setPhone(Phone)}
         Phone={Phone}
         placeholder={"Téléphone"}
         keyboardType={"phone-pad"}
@@ -60,9 +60,11 @@ export function RegisterScreen({ navigation }) {
     );
 
   const handleClick = (value) => {
+    setPhone(null);
+    setEmail(null);        
     setValue(value);
   };
-
+  
   return (
     <AuthContainer>
       <Heading style={styles.titre}>Inscription</Heading>
@@ -74,7 +76,8 @@ export function RegisterScreen({ navigation }) {
             value: 1,
           },
         ]}
-        onPress={handleClick}
+        onPress={
+          handleClick}
       />
 
       <IconButton
@@ -84,12 +87,12 @@ export function RegisterScreen({ navigation }) {
           navigation.pop();
         }}
       />
-
-      <Error error={ErrorValidation} />
-      <Error error={ErrorValidationLong} />
+      {/* {errorList} */}
+       <Error error={ErrorValidation} /> 
+       <Error error={ErrorValidationLong} />
       <Error error={ErrorValidationMa} />
       <Error error={ErrorValidationMi} />
-      <Error error={ErrorValidationNbr} />
+      <Error error={ErrorValidationNbr} /> 
       <Input
         style={styles.input}
         onChangeText={(Nom) => setNom(Nom)}
@@ -109,6 +112,7 @@ export function RegisterScreen({ navigation }) {
         style={styles.input}
         onChangeText={(Password) => setPassword(Password)}
         Password={Password}
+        required={true}
         placeholder={"Mot de passe"}
         secureTextEntry
       />
@@ -117,11 +121,7 @@ export function RegisterScreen({ navigation }) {
         title={"Inscrire"}
         style={styles.loginButton}
         onPress={() => {
-          // if (value === 0) {
-          //   setPhone(null);
-          // } else {
-          //   setEmail(null);
-          // }
+         
           if (!helpers.validNom(Nom)) {
             setErrorValidation("Champ nom est vide");
             return;
@@ -131,7 +131,11 @@ export function RegisterScreen({ navigation }) {
             return;
           }
           var RetourValid = helpers.IsValidUserInfo(Email, Phone);
-          setErrorValidation(RetourValid.ErrorValidUserSaisi);
+         
+          if(!RetourValid.ErrorUserSaisiEmailOrPhone){
+            setErrorValidation(RetourValid.MessageErrorEmailOrPhone);
+            return;
+          }
           var RetourPasswordValid = helpers.ValidPassWord(Password);
           if (!RetourPasswordValid.Longueur) {
             setErrorValidationLong(
@@ -177,15 +181,12 @@ export function RegisterScreen({ navigation }) {
           ) {
             return;
           }
-
-          var RetourValid = helpers.IsValidUserInfo(Email, Phone);
-          setErrorValidation(RetourValid.ErrorValidUserSaisi);
-          if (RetourValid.ErrorUserSaisi == true) {
+          if (RetourValid.ErrorUserSaisiEmailOrPhone == true) {
             AjouterUser();
             if (data === true) {
               setErrorValidation("");
               navigation.navigate("Login");
-            } else if (data==false) {
+            } else if (data == false) {
               setErrorValidation(
                 "Un utilisateur avec ce même numéro ou la même adresse existe déja"
               );

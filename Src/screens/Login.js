@@ -18,17 +18,16 @@ export function LoginScreen({ navigation }) {
      const [Password,setPassword] =useState ('');
      const [ErrorValidation,setErrorValidation] =useState ('');
     const [value, setValue] = useState(0);
-
-
     const getUser=async()=>{
         console.log('allo1')
-       await axios.post('http://169.254.41.84:4000/login',{
+       await axios.post('http://192.168.5.235:4000/Login',{
             Email:Email,
             Password:Password,
             Phone:Phone
+        },)
+        .then((response) => {
+            setuser(response.data)
         })
-        .then(user => setuser(user.data))
-       // .then(j=>helpers.VerifierUse(user,Email,Phone))
         .catch(err => {
             console.log('caught it!',err.status);
         })}
@@ -38,8 +37,7 @@ export function LoginScreen({ navigation }) {
             style={styles.input}
             onChangeText={Email=>setEmail(Email)}
             Email={Email}
-            placeholder={"Adresse Email"}
-           // keyboardType={"email-adress"}   
+            placeholder={"Adresse Email"}   
         />
     ) : ( 
         <Input
@@ -47,15 +45,18 @@ export function LoginScreen({ navigation }) {
             onChangeText={Phone=>setPhone(Phone)}
             Phone={Phone}
             placeholder={"Numéro téléphone "}
-           // keyboardType={"tel"}         
+            keyboardType={"phone-pad"}      
          />
     )
 
     const handleClick = (value) => {
+        setPhone(null)
+        setEmail(null)
         setValue(value)
      }
      
     return (
+        
         <AuthContainer>
             
             <Heading style={styles.titre}>Se connecter</Heading>
@@ -79,15 +80,19 @@ export function LoginScreen({ navigation }) {
                 title={"Connexion"}
                 style={styles.loginButton}
                 onPress={() => {
-                    if(value===0){
-                        setPhone(null);
-                    }else{
-                        setEmail(null)
-                    } 
+
                     var RetourValid= helpers.IsValidUserInfo(Email,Phone)
-                    setErrorValidation(RetourValid.ErrorValidUserSaisi)
-                 
-                   if (RetourValid.ErrorUserSaisi==true){getUser()}
+                    setErrorValidation(RetourValid.MessageErrorEmailOrPhone)
+                   if (RetourValid.ErrorUserSaisiEmailOrPhone==true){
+                    getUser()
+                      if(user.length!=0){
+                        console.log(user)
+                        setErrorValidation('Bienvenue sur Nkossi '+user[0].Prenom+' '+user[0].Nom);
+                        navigation.navigate("Accueil")
+                      } else {
+                        setErrorValidation('Aucun utilisateur ne correspond à ces informations')
+                        }
+                    }
                 }}
             />
 

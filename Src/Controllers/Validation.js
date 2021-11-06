@@ -1,4 +1,4 @@
-import { isValidPhoneNumber } from "react-phone-number-input";
+
 let i = 0;
 const helpers = {
   validNom: function (Nom) {
@@ -16,7 +16,7 @@ const helpers = {
     }
   },
   ValidPassWord: function (PassWord) {
-    const IsValidInfosPassWord = {
+    const IsValidEmailOrPhonePassWord = {
       Longueur: false,
       Majuscule: false,
       Minuscule: false,
@@ -28,47 +28,48 @@ const helpers = {
     } else if (PassWord != undefined && PassWord != null) {
       var ValidRegexMi = new RegExp("^(?=.*[a-z])");
       if (ValidRegexMi.test(PassWord)) {
-        IsValidInfosPassWord.Minuscule = true;
+        IsValidEmailOrPhonePassWord.Minuscule = true;
       }
       var ValidRegexMa = new RegExp("^(?=.*[A-Z])");
       if (ValidRegexMa.test(PassWord)) {
-        IsValidInfosPassWord.Majuscule = true;
+        IsValidEmailOrPhonePassWord.Majuscule = true;
       }
       var ValidRegexNbr = new RegExp("^(?=.*[0-9])");
       if (ValidRegexNbr.test(PassWord)) {
-        IsValidInfosPassWord.Nombre = true;
+        IsValidEmailOrPhonePassWord.Nombre = true;
       }
       var ValidRegexMdp = new RegExp("^(?=.*[!@#$%^&*])");
       if (ValidRegexMdp.test(PassWord)) {
-        IsValidInfosPassWord.CaractereSpeciaux = true;
+        IsValidEmailOrPhonePassWord.CaractereSpeciaux = true;
       }
       var ValidRegexLong = new RegExp("^(?=.{8,})");
       if (ValidRegexLong.test(PassWord)) {
-        IsValidInfosPassWord.Longueur = true;
+        IsValidEmailOrPhonePassWord.Longueur = true;
       }
-      return IsValidInfosPassWord;
+      return IsValidEmailOrPhonePassWord;
     }
   },
 
   IsValidUserInfo: function (Email, Phone) {
-    const IsValidInfos = {
-      ErrorUserSaisi: false,
-      ErrorValidUserSaisi: "",
+    const IsValidEmailOrPhone = {
+      ErrorUserSaisiEmailOrPhone: false,
+      MessageErrorEmailOrPhone: "",
+      
     };
     if (Phone === null && Email === null) {
-      IsValidInfos.ErrorValidUserSaisi =
+      IsValidEmailOrPhone.MessageErrorEmailOrPhone =
         "Veuillez remplir Email ou le numéro de téléphone";
-      return IsValidInfos;
-    } else if (Email != undefined && Email != null) {
+      return IsValidEmailOrPhone;
+    } else if (Email != undefined && Email !=null) {
       const ValidRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
       try {
         if (!ValidRegex.test(Email)) {
-          IsValidInfos.ErrorUserSaisi = false;
-          IsValidInfos.ErrorValidUserSaisi = "Email invalide";
-          return IsValidInfos;
+          IsValidEmailOrPhone.ErrorUserSaisiEmailOrPhone = false;
+          IsValidEmailOrPhone.MessageErrorEmailOrPhone = "Email invalide";
+          return IsValidEmailOrPhone;
         } else {
-          IsValidInfos.ErrorUserSaisi = true;
-          return IsValidInfos;
+          IsValidEmailOrPhone.ErrorUserSaisiEmailOrPhone = true;
+          return IsValidEmailOrPhone;
         }
       } catch (error) {
         console.log(error);
@@ -76,13 +77,13 @@ const helpers = {
     } else if (Phone != null && Phone != undefined) {
       var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
       if (regex.test(Phone)) {
-        IsValidInfos.ErrorUserSaisi = true;
+        IsValidEmailOrPhone.ErrorUserSaisiEmailOrPhone = true;
         console.log(Phone);
-        return IsValidInfos;
+        return IsValidEmailOrPhone;
       } else {
-        IsValidInfos.ErrorValidUserSaisi =
+        IsValidEmailOrPhone.MessageErrorEmailOrPhone =
           "Le numéro de téléphone international est invalide";
-        return IsValidInfos;
+        return IsValidEmailOrPhone;
       }
     }
   },

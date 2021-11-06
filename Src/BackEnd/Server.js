@@ -7,7 +7,7 @@ const Requete = require('./Requetes');
 app.use(express.json())
 app.use(cors())
 
-app.post("/login",(req,res)=>{
+app.post("/Login",(req,res)=>{
    Requete.Login(db,req,res)
 });
 app.post('/Sign',(req,res)=>{

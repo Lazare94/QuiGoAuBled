@@ -7,8 +7,17 @@ const Requete={
         const password=req.body.Password
         const phone=req.body.Phone
         var  saltRounds  = 10;
+        console.log(password)
+        let requet="";
+        console.log(password)
         bcrypt.hash(password,saltRounds,function(err,hash){
-        db.query('SELECT * FROM users WHERE Email=? Or Phone=? AND Mdp=? ',
+          if(email==""){
+            requet="SELECT * FROM users WHERE Phone=?";
+           }
+           else{
+             requet="SELECT * FROM users WHERE Email=? ";
+           }
+        db.query(requet,
         [email,phone,hash],
         (error, results, fields)=>{
        console.log(results)
@@ -27,28 +36,32 @@ const Requete={
         const DateCreation= new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
         const TypeUser=1;
         const EtatCompte="Actif";
+       let requet="";
         var  saltRounds  = 10;
-        console.log(email)
         bcrypt.hash(Mdp,saltRounds,function(err,hash){
-          db.query('SELECT * FROM users WHERE Email=? AND Phone=?',
+          if(email==null){
+           requet="SELECT * FROM users WHERE Phone=?";
+          }
+          else{
+            requet="SELECT * FROM users WHERE Email=? ";
+          }
+          console.log(requet)
+          db.query(requet,
         [email,Phone],
         (error, results, fields)=>{
           console.log(results)
-          console.log(results.length)
           if(results.length==0){
             db.query('INSERT INTO users (Nom,Prenom,Phone,Mdp,Email,DateCreation,TypeUser,EtatCompte) VALUES (?,?,?,?,?,?,?,?) ',
             [Nom,Prenom,Phone,hash,email,DateCreation,TypeUser,EtatCompte],
             (error, resultat, fields)=>{
-               
+               console.log(resultat)
               if (error) throw error;
             res.send(true)
             })
           } else {
             res.send(false)
           }
-       //console.log(results)
           if (error) throw error;
-        // res.send(results)
         })
 
           
