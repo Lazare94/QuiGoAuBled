@@ -5,14 +5,15 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 export function IconButton({name,style,onPress}) {
   return ( <TouchableOpacity style = {[styles.container,style]} onPress={onPress}>
-        <Icon name={name} color={'purple'} />
+        <Icon name={name} color={'purple'}/>
     </TouchableOpacity>);
 }
 
 const styles = StyleSheet.create({
 
   container: {
-    
+  //size:100,
+  
   },
   
 });
