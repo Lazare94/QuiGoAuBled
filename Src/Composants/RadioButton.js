@@ -1,12 +1,10 @@
 import React from 'react';
-import { View,StyleSheet,style} from 'react-native';
+import { View,StyleSheet} from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 
-  export function RadioButtons({Valeur,onPress}) {
-    
+  export function RadioButtons({Valeur,onPress}) { 
      return ( 
-    
-       <View style = {[styles.container,style]} onPress={onPress}>
+       <View style = {[styles.container,styles]} onPress={onPress}>
          <RadioForm
           radio_props={Valeur}
            initial={0}
@@ -22,6 +20,6 @@ import RadioForm from 'react-native-simple-radio-button';
   const styles = StyleSheet.create({
 
     container: {
-      
+      borderRadius:20,
     },
   });

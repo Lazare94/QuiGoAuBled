@@ -4,17 +4,29 @@ const Requete={
 
      Login:function(db,req,res){
         const email=req.body.Email
-        console.log(email)
-        db.query('SELECT * FROM users WHERE Email=? ',
-        [email],
+        const password=req.body.Password
+        const phone=req.body.Phone
+        var  saltRounds  = 10;
+        console.log(password)
+        let requet="";
+        console.log(password)
+        bcrypt.hash(password,saltRounds,function(err,hash){
+          if(email==""){
+            requet="SELECT * FROM users WHERE Phone=?";
+           }
+           else{
+             requet="SELECT * FROM users WHERE Email=? ";
+           }
+        db.query(requet,
+        [email,phone,hash],
         (error, results, fields)=>{
-      
+       console.log(results)
           if (error) throw error;
-      
-          res.send(results)
-        });
-        
+         res.send(results)
+        })
+      });
      },
+
     Sign:function(db,req,res){
         const email=req.body.Email;
         const Nom=req.body.Nom;
@@ -24,17 +36,35 @@ const Requete={
         const DateCreation= new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
         const TypeUser=1;
         const EtatCompte="Actif";
+       let requet="";
         var  saltRounds  = 10;
-        console.log(email)
         bcrypt.hash(Mdp,saltRounds,function(err,hash){
-            console.log(hash)
-        db.query('INSERT INTO users (Nom,Prenom,Phone,Mdp,Email,DateCreation,TypeUser,EtatCompte) VALUES (?,?,?,?,?,?,?,?) ',
-        [Nom,Prenom,Phone,hash,email,DateCreation,TypeUser,EtatCompte],
+          if(email==null){
+           requet="SELECT * FROM users WHERE Phone=?";
+          }
+          else{
+            requet="SELECT * FROM users WHERE Email=? ";
+          }
+          console.log(requet)
+          db.query(requet,
+        [email,Phone],
         (error, results, fields)=>{
-            console.log(hash);
+          console.log(results)
+          if(results.length==0){
+            db.query('INSERT INTO users (Nom,Prenom,Phone,Mdp,Email,DateCreation,TypeUser,EtatCompte) VALUES (?,?,?,?,?,?,?,?) ',
+            [Nom,Prenom,Phone,hash,email,DateCreation,TypeUser,EtatCompte],
+            (error, resultat, fields)=>{
+               console.log(resultat)
+              if (error) throw error;
+            res.send(true)
+            })
+          } else {
+            res.send(false)
+          }
           if (error) throw error;
-        res.send(results)
         })
+
+          
     });
      }
 }
