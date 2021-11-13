@@ -11,11 +11,14 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { AuthContainer } from "../Composants/AuthContainer";
-//import {createDrawerNavigator} from 'react-navigation-drawer';
-import { Dimensions } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { createDrawerNavigator } from "react-navigation";
+import { MyDrawer } from "../navigators/AuthStackNavigator";
+// import {
+//     Spinner,
+//     HStack,
+//     Heading,
+//     Center,
+//     NativeBaseProvider,
+//   } from "native-base"
 export function AccueilScreen({ navigation }) {
     const styles = StyleSheet.create({
         container: {
@@ -35,62 +38,30 @@ export function AccueilScreen({ navigation }) {
         },
     });
     return (
-        <AuthContainer>
-                <SectionList
-                    sections={[
-                        {
-                            title: "D",
-                            data: [
-                                "Devin",
-                                "Dan",
-                                "Dominic"
-                            ],
-                        },
-                        {
-                            title: "J",
-                            data: [
-                                "Jackson",
-                                "James",
-                                "Jillian",
-                                "Jimmy",
-                                "Joel",
-                                "John"
-                            ],
-                        },
-                    ]}
-                    renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
-                    renderSectionHeader={({ section }) => (
-                        <Text style={styles.sectionHeader}>{section.title}</Text>
-                    )}
-                    keyExtractor={(item, index) => index}
-                />
-        </AuthContainer>
-    );
-    // const createDrawerNavigator=createDrawerNavigator({
+            <SafeAreaView style={styles.container} color="#161924">
+                <TouchableOpacity style={{alignItems:"flex-end",margin:16}}
+                //onPress={() => navigation.toggleDrawer()}
+                onPress={MyDrawer}
+                >
+                <FontAwesome5 name="bars" size={24} color="#161924"></FontAwesome5>
+              
 
-    // });
-    //         return (
-    //             <AuthContainer>
-    //             <view>
-    //                 <SafeAreaView style={{flex:1}}>
-    //                     <TouchableOpacity style={{alignItems:"flex-end",margin:16}}
-    //                     onPress={this.props.navigation.openDrawer}
-    //                     >
-    //                         <FontAwesome5 name="bars" size={24} color="#161924"/>
-    //                     </TouchableOpacity>
-    //                 </SafeAreaView>
-    //             </view>
-    //             </AuthContainer>
-    //         //   <View style={styles.container}>
-    //         //     <SectionList
-    //         //       sections={[
-    //         //         {title: 'D', data: ['Devin', 'Dan', 'Dominic']},
-    //         //         {title: 'J', data: ['Jackson', 'James', 'Jillian', 'Jimmy', 'Joel', 'John', 'Julie']},
-    //         //       ]}
-    //         //       renderItem={({item}) => <Text style={styles.item}>{item}</Text>}
-    //         //       renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-    //         //       keyExtractor={(item, index) => index}
-    //         //     />
-    //         //   </View>
-    //         );
+    {/* <HStack space={2} alignItems="center">
+      <Spinner accessibilityLabel="Loading posts" />
+      <Heading color="primary.500" fontSize="md">
+        Loading
+      </Heading>
+    </HStack> */}
+                </TouchableOpacity>
+            {/* <Text>Page content</Text> */}
+            </SafeAreaView>
+    );
 }
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor:'#FFF'
+    },
+  });
+  

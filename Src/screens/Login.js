@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { StyleSheet} from "react-native";
+import { StyleSheet,ActivityIndicator} from "react-native";
 import { Heading } from "../Composants/Heading";
 import { Input } from "../Composants/Input";
 import { FilledButton } from "../Composants/FilledButton";
@@ -18,6 +18,7 @@ export function LoginScreen({ navigation }) {
      const [Password,setPassword] =useState ('');
      const [ErrorValidation,setErrorValidation] =useState ('');
     const [value, setValue] = useState(0);
+    const [indicator, setIndicator] = useState(false);
     const getUser=async()=>{
         console.log('allo1')
        await axios.post('http://192.168.5.235:4000/Login',{
@@ -27,8 +28,10 @@ export function LoginScreen({ navigation }) {
         },)
         .then((response) => {
             setuser(response.data)
+            console.log(indicator)
         })
         .catch(err => {
+            setIndicator(false)
             console.log('caught it!',err.status);
         })}
 
@@ -58,7 +61,7 @@ export function LoginScreen({ navigation }) {
     return (
         
         <AuthContainer>
-            
+           <ActivityIndicator animating={indicator} position='absolute' color="#00ff00" size={200} title={"loading"}/>
             <Heading style={styles.titre}>Se connecter</Heading>
             <RadioButtons
 
@@ -67,6 +70,7 @@ export function LoginScreen({ navigation }) {
             />
 
             <Error error={ErrorValidation} />
+            
             {myinput}
             <Input
                 style={styles.input}
@@ -76,15 +80,19 @@ export function LoginScreen({ navigation }) {
                 secureTextEntry
                
             />
+              
             <FilledButton
+            
                 title={"Connexion"}
                 style={styles.loginButton}
                 onPress={() => {
-
+                    
                     var RetourValid= helpers.IsValidUserInfo(Email,Phone)
                     setErrorValidation(RetourValid.MessageErrorEmailOrPhone)
                    if (RetourValid.ErrorUserSaisiEmailOrPhone==true){
+                    setIndicator(true)
                     getUser()
+                    setIndicator(false)
                       if(user.length!=0){
                         console.log(user)
                         setErrorValidation('Bienvenue sur Nkossi '+user[0].Prenom+' '+user[0].Nom);
